@@ -31,6 +31,9 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	private Parent loginRoot;
 	private Parent homeRoot;
 	
+	private LoginController loginController;
+	private HomeController homeController;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		instance = this;
@@ -38,8 +41,13 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 
 		try {
 			// Load FXML
-			loginRoot = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
-			homeRoot = FXMLLoader.load(getClass().getResource("/view/Home.fxml"));
+			FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
+			FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/view/Home.fxml"));
+			
+			loginRoot = loginLoader.load();
+			loginController = loginLoader.getController();
+			homeRoot = homeLoader.load();
+			homeController = homeLoader.getController();
 			
 			
 			mainScene = new Scene(loginRoot, 800, 560);
