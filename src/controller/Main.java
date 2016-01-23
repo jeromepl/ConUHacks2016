@@ -26,7 +26,9 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	public static Main instance;//Singleton
 
 	private Stage stage;
-
+	private Scene loginScene;
+	private Scene homeScene;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		instance = this;
@@ -35,32 +37,15 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 		try {
 			server.upload(new File("images/kiwi.jpg"), this);
 
+			
+			// Setup login scene
 			Parent loginRoot = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
+			loginScene = new Scene(loginRoot, 800, 560);
 
-			Scene scene = new Scene(loginRoot, 800, 560);
-
-			primaryStage.setOnCloseRequest(this);
-
-			primaryStage.setScene(scene);
-			primaryStage.setTitle("Awesome App");
-			primaryStage.show();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) {
-		launch(args);
-	}
-
-	public void showHome() {
-
-		try {
+			// Setup home scene
 			Parent homeRoot = FXMLLoader.load(getClass().getResource("/view/Home.fxml"));
-			Scene scene = new Scene(homeRoot, 800, 560);
-
-			//DRAG AND DROP
-			scene.setOnDragOver(new EventHandler<DragEvent>() {
+			homeScene = new Scene(homeRoot, 800, 560);
+			homeScene.setOnDragOver(new EventHandler<DragEvent>() {
 	            @Override
 	            public void handle(DragEvent event) {
 	                Dragboard db = event.getDragboard();
@@ -71,9 +56,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	                }
 	            }
 	        });
-
-	        // Dropping over surface
-	        scene.setOnDragDropped(new EventHandler<DragEvent>() {
+	        homeScene.setOnDragDropped(new EventHandler<DragEvent>() {
 	            @Override
 	            public void handle(DragEvent event) {
 	                Dragboard db = event.getDragboard();
@@ -94,11 +77,28 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	                event.consume();
 	            }
 	        });
+			
+			// Setup stage
+			primaryStage.setOnCloseRequest(this);
 
-	        stage.setScene(scene);
+			primaryStage.setScene(loginScene);
+			primaryStage.setTitle("Awesome App");
+			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	public void showHome() {
+		stage.setScene(homeScene);
+	}
+	
+	public void showLogin() {
+		stage.setScene(loginScene);
 	}
 
 	@Override
