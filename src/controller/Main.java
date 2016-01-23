@@ -3,11 +3,15 @@ package controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import model.APIUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 
 public class Main extends Application {
+
+	private APIUtils apiUtils = new APIUtils();
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {
