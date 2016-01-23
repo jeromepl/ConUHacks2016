@@ -20,6 +20,9 @@ public class HomeController implements Initializable {
 
 	@FXML
     private AnchorPane Root;
+	
+    @FXML
+    private GridPane mainGrid;
 
     @FXML
     private Label label;
@@ -64,6 +67,8 @@ public class HomeController implements Initializable {
 		// Stupid javafx
 		FlowPane.prefHeightProperty().bind(ScrollPane.heightProperty());
 		FlowPane.prefWidthProperty().bind(ScrollPane.widthProperty());
+		mainGrid.prefHeightProperty().bind(Root.heightProperty());
+		mainGrid.prefWidthProperty().bind(Root.widthProperty());
 	}
 
     @FXML
