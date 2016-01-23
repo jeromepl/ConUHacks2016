@@ -12,7 +12,7 @@ public class HomeController implements Initializable {
 	@FXML Label label;
 
 	@Override
-	public void initialize(URL arg0, ResourceBundle arg1) {
+	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		// TODO Auto-generated method stub
 
 	}
