@@ -52,10 +52,10 @@ public class Server {
 		});
 	}
 	
-	public static String toGetRequest(List<Tag> tags) {
+	public static String toGetRequest(List<String> tags) {
 		StringBuffer string = new StringBuffer();
-		for (Tag tag : tags) {
-			string.append(tag.getName() + ";");
+		for (String tag : tags) {
+			string.append(tag + ";");
 		}
 		string.deleteCharAt(string.length() - 1);
 		return string.toString().replaceAll(" ", "_");

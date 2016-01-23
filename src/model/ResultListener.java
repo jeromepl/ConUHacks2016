@@ -7,5 +7,5 @@ import com.clarifai.api.Tag;
 
 public interface ResultListener {
 
-	public void onResult(File file, List<Tag> tags);
+	public void onResult(File file, List<String> tags);
 }
