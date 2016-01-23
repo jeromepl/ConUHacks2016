@@ -60,6 +60,8 @@ public class HomeController implements Initializable {
 	@Override
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		System.out.println("Home Scene initialized!");
+		
+		// Stupid javafx
 		FlowPane.prefHeightProperty().bind(ScrollPane.heightProperty());
 		FlowPane.prefWidthProperty().bind(ScrollPane.widthProperty());
 	}

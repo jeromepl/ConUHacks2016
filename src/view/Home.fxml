@@ -25,11 +25,31 @@
       </Label>
       <ScrollPane fx:id="ScrollPane" hbarPolicy="NEVER" layoutX="28.0" layoutY="92.0" prefHeight="368.0" prefWidth="690.0" vbarPolicy="ALWAYS">
          <content>
-            <FlowPane fx:id="FlowPane" prefHeight="239.0" prefWidth="441.0" style="-fx-background-color: RED;">
+            <FlowPane fx:id="FlowPane" prefHeight="366.0" prefWidth="677.0" style="-fx-background-color: RED;">
                <children>
                   <ImageView fx:id="iamge2" fitHeight="107.0" fitWidth="112.0" pickOnBounds="true">
                      <image>
                         <Image url="@../../images/Banana21.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="image6" fitHeight="94.0" fitWidth="215.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/watermelon-ogr-2.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="image1" fitWidth="87.0" pickOnBounds="true" preserveRatio="true" style="-fx-scale-x: 1;">
+                     <image>
+                        <Image url="@../../images/apple_by_grv422-d5554a4.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="image4" fitHeight="60.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/mango-1.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="image3" fitHeight="87.0" fitWidth="189.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../images/kiwi.jpg" />
                      </image>
                   </ImageView>
                   <ImageView fx:id="image5" fitHeight="86.0" fitWidth="262.0" pickOnBounds="true" preserveRatio="true">
@@ -40,25 +60,5 @@
                </children></FlowPane>
          </content>
       </ScrollPane>
-      <ImageView fx:id="image1" fitWidth="87.0" layoutX="263.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true" style="-fx-scale-x: 1;">
-         <image>
-            <Image url="@../../images/apple_by_grv422-d5554a4.jpg" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="image4" fitHeight="60.0" fitWidth="88.0" layoutX="100.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../images/mango-1.jpg" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="image3" fitHeight="87.0" fitWidth="189.0" layoutX="152.0" layoutY="-4.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../images/kiwi.jpg" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="image6" fitHeight="94.0" fitWidth="215.0" layoutX="295.0" layoutY="-15.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../images/watermelon-ogr-2.jpg" />
-         </image>
-      </ImageView>
    </children>
 </AnchorPane>
