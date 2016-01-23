@@ -28,13 +28,13 @@ public class APIUtils implements ResultListener {
 	public APIUtils() {
 		clarifai = new ClarifaiClient(id, secret);
 		threadPool = Executors.newFixedThreadPool(MAX_THREADS);
-		System.out.println("Success");
+		System.out.println("API successfully loaded");
 		
 		// Test
 		//File image = new File("images/Banana21.jpg");
 		//analyseImage(image, this);
-		File text = new File("images/text.txt");
-		analyseText(text, this);
+		//File text = new File("images/text.txt");
+		//analyseText(text, this);
 	}
 	
 	public void analyseImage(File image, ResultListener listener) {

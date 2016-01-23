@@ -35,9 +35,6 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 		stage = primaryStage;
 
 		try {
-			server.upload(new File("images/kiwi.jpg"), this);
-
-			
 			// Setup login scene
 			Parent loginRoot = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
 			loginScene = new Scene(loginRoot, 800, 560);
