@@ -3,6 +3,8 @@
 
     if(isset($_GET['name']) && strlen($_GET['name']) > 0) {
         
+        //name contains the extension
+        
         //Upload the file to the "files" folder
         $filename= $_GET['name'];
         $fileData=file_get_contents('php://input');

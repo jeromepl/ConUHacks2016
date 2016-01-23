@@ -1,8 +1,10 @@
 package model;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -10,8 +12,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import com.clarifai.api.Tag;
 
 public class Server {
 
@@ -53,9 +53,26 @@ public class Server {
 	}
 
 	public void search(String query) {
+		try {
+			URL url = new URL("http://www.nodynotes.com/findme/search.php?query=" + query);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
 
-		String url = "http://www.nodynotes.com/findme/search.php?query=" + query;
-		//TODO Call server GET way
+			con.setRequestMethod("GET");
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			String response = "";
+
+			while ((inputLine = in.readLine()) != null) {
+				response += inputLine;
+			}
+			in.close();
+
+			System.out.println(response);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static String toGetRequest(List<String> tags) {

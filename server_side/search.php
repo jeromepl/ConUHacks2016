@@ -5,6 +5,9 @@
         
         $in_list = implode(',', explode('_', $_GET['query']));
         
+        echo "Hello!";
+        echo "Hello again!";
+        /*
         $answer = $bdd->prepare('SELECT f.name
                                     FROM files f
                                     INNER JOIN tags t ON t.file_id = f.id
@@ -19,6 +22,6 @@
 			
 		}
 		
-		$answer->closeCursor();
+		$answer->closeCursor();*/
         
     }
