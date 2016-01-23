@@ -26,8 +26,10 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	public static Main instance;//Singleton
 
 	private Stage stage;
-	private Scene loginScene;
-	private Scene homeScene;
+	private Scene mainScene;
+	
+	private Parent loginRoot;
+	private Parent homeRoot;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -35,14 +37,14 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 		stage = primaryStage;
 
 		try {
-			// Setup login scene
-			Parent loginRoot = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
-			loginScene = new Scene(loginRoot, 800, 560);
+			// Load FXML
+			loginRoot = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
+			homeRoot = FXMLLoader.load(getClass().getResource("/view/Home.fxml"));
+			
+			mainScene = new Scene(loginRoot, 800, 560);
 
 			// Setup home scene
-			Parent homeRoot = FXMLLoader.load(getClass().getResource("/view/Home.fxml"));
-			homeScene = new Scene(homeRoot, 800, 560);
-			homeScene.setOnDragOver(new EventHandler<DragEvent>() {
+			homeRoot.setOnDragOver(new EventHandler<DragEvent>() {
 	            @Override
 	            public void handle(DragEvent event) {
 	                Dragboard db = event.getDragboard();
@@ -53,7 +55,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	                }
 	            }
 	        });
-	        homeScene.setOnDragDropped(new EventHandler<DragEvent>() {
+	        homeRoot.setOnDragDropped(new EventHandler<DragEvent>() {
 	            @Override
 	            public void handle(DragEvent event) {
 	                Dragboard db = event.getDragboard();
@@ -78,7 +80,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 			// Setup stage
 			primaryStage.setOnCloseRequest(this);
 
-			primaryStage.setScene(loginScene);
+			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("Awesome App");
 			primaryStage.show();
 		} catch(Exception e) {
@@ -91,11 +93,11 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	}
 
 	public void showHome() {
-		stage.setScene(homeScene);
+		mainScene.setRoot(homeRoot);
 	}
 	
 	public void showLogin() {
-		stage.setScene(loginScene);
+		mainScene.setRoot(loginRoot);
 	}
 
 	@Override
