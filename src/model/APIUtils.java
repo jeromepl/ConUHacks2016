@@ -1,6 +1,11 @@
 package model;
 
+import java.io.File;
+import java.util.List;
+
 import com.clarifai.api.ClarifaiClient;
+import com.clarifai.api.RecognitionRequest;
+import com.clarifai.api.RecognitionResult;
 
 public class APIUtils {
 
@@ -12,5 +17,9 @@ public class APIUtils {
 	public APIUtils() {
 		clarifai = new ClarifaiClient(id, secret);
 		System.out.println("Success");
+	}
+	
+	public List<RecognitionResult> analyseImage(File image) {
+		return clarifai.recognize(new RecognitionRequest(image));
 	}
 }
