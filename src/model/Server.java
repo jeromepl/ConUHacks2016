@@ -7,8 +7,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.clarifai.api.Tag;
 
 public class Server {
 
@@ -47,6 +50,15 @@ public class Server {
 			}
 
 		});
+	}
+	
+	public static String toGetRequest(List<Tag> tags) {
+		StringBuffer string = new StringBuffer();
+		for (Tag tag : tags) {
+			string.append(tag.getName() + ";");
+		}
+		string.deleteCharAt(string.length() - 1);
+		return string.toString().replaceAll(" ", "_");
 	}
 
 	public void close() {

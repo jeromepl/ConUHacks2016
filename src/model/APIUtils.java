@@ -58,5 +58,6 @@ public class APIUtils implements ResultListener {
 			System.out.println("(" + tag.getName() + ", " + (tag.getProbability() * 100) + "%)");
 		}
 		System.out.println();
+		System.out.println(Server.toGetRequest(tags));
 	}
 }
