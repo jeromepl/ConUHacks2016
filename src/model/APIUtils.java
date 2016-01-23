@@ -57,76 +57,83 @@ public class APIUtils implements ResultListener {
 	
 	public void analyseText(File textFile, ResultListener listener) {
 		// TODO add file checks
-		Scanner input;
-		try {
-			input = new Scanner(textFile);
-			ArrayList<String> names = new ArrayList<String>();
-			while (input.hasNext()) {
-				String name = input.next().replaceAll("[\\W\\d]", "");
-				if (!name.isEmpty() && name.length() > 3) {
-					names.add(name);
-				}
-			}
-			
-			HashMap<String, Integer> count = new HashMap<String, Integer>();
-			for (String name : names) {
-				Integer countValue = count.get(name);
-				if (countValue == null) {
-					count.put(name, 1);
-				}
-				else {
-					count.put(name, ++countValue);
-				}
-			}
-			
-			ArrayList<String> strings = new ArrayList<String>();
-			ArrayList<Integer> counts = new ArrayList<Integer>();
-			for (String key : count.keySet()) {
-				strings.add(key);
-				counts.add(count.get(key));
-			}
-			
-			// Sort by count
-			for (int i = 0; i < counts.size(); i++) {
-				int maxIndex = i;
-				int maxValue = counts.get(i);
-				for (int j = i + 1; j < counts.size(); j++) {
-					if (counts.get(j) > maxValue) {
-						maxIndex = j;
-						maxValue = counts.get(j);
+		threadPool.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				Scanner input;
+				try {
+					input = new Scanner(textFile);
+					ArrayList<String> names = new ArrayList<String>();
+					while (input.hasNext()) {
+						String name = input.next().replaceAll("[\\W\\d]", "");
+						if (!name.isEmpty() && name.length() > 3) {
+							names.add(name);
+						}
 					}
+					
+					HashMap<String, Integer> count = new HashMap<String, Integer>();
+					for (String name : names) {
+						Integer countValue = count.get(name);
+						if (countValue == null) {
+							count.put(name, 1);
+						}
+						else {
+							count.put(name, ++countValue);
+						}
+					}
+					
+					ArrayList<String> strings = new ArrayList<String>();
+					ArrayList<Integer> counts = new ArrayList<Integer>();
+					for (String key : count.keySet()) {
+						strings.add(key);
+						counts.add(count.get(key));
+					}
+					
+					// Sort by count
+					for (int i = 0; i < counts.size(); i++) {
+						int maxIndex = i;
+						int maxValue = counts.get(i);
+						for (int j = i + 1; j < counts.size(); j++) {
+							if (counts.get(j) > maxValue) {
+								maxIndex = j;
+								maxValue = counts.get(j);
+							}
+						}
+						
+						// Swap
+						int tempCount = counts.get(maxIndex);
+						String tempString = strings.get(maxIndex);
+						
+						counts.set(maxIndex, counts.get(i));
+						strings.set(maxIndex, strings.get(i));
+						counts.set(i, tempCount);
+						strings.set(i, tempString);
+					}
+					
+//					for (String name : names) {
+//						System.out.println(name + ": " + count.get(name));
+//					}
+//					
+//					System.out.println("--------------SORTED----------");
+//					for (int i = 0; i < strings.size(); i++) {
+//						System.out.println(strings.get(i) + ": " + counts.get(i));
+//					}
+					
+					// Take top 20
+					ArrayList<String> finalList = new ArrayList<String>();
+					for (int i = 0; i < 20 && i < strings.size(); i++) {
+						finalList.add(strings.get(i));
+					}
+					
+					listener.onResult(textFile, finalList);
+				} 
+				catch (FileNotFoundException e) {
+					e.printStackTrace();
 				}
-				
-				// Swap
-				int tempCount = counts.get(maxIndex);
-				String tempString = strings.get(maxIndex);
-				
-				counts.set(maxIndex, counts.get(i));
-				strings.set(maxIndex, strings.get(i));
-				counts.set(i, tempCount);
-				strings.set(i, tempString);
-			}
-			
-//			for (String name : names) {
-//				System.out.println(name + ": " + count.get(name));
-//			}
-//			
-//			System.out.println("--------------SORTED----------");
-//			for (int i = 0; i < strings.size(); i++) {
-//				System.out.println(strings.get(i) + ": " + counts.get(i));
-//			}
-			
-			// Take top 20
-			ArrayList<String> finalList = new ArrayList<String>();
-			for (int i = 0; i < 20 && i < strings.size(); i++) {
-				finalList.add(strings.get(i));
-			}
-			
-			listener.onResult(textFile, finalList);
-		} 
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+			}});
+		
+		
 	}
 	
 	public void close() {
