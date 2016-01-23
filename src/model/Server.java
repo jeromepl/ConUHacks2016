@@ -7,14 +7,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.clarifai.api.RecognitionRequest;
-import com.clarifai.api.RecognitionResult;
-
-public class Server implements ServerListener {
+public class Server {
 
 	public static final int MAX_THREADS = 10;
 
@@ -24,7 +20,7 @@ public class Server implements ServerListener {
 		threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 	}
 
-	public void upload(File file) throws MalformedURLException, IOException {
+	public void upload(File file, ServerListener listener) throws MalformedURLException, IOException {
 		threadPool.submit(new Runnable() {
 
 			@Override
@@ -46,6 +42,8 @@ public class Server implements ServerListener {
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
+
+				listener.onResult();
 			}
 
 		});
@@ -53,10 +51,5 @@ public class Server implements ServerListener {
 
 	public void close() {
 		threadPool.shutdown();
-	}
-
-	@Override
-	public void onResult() {
-		System.out.println("Uploaded file");
 	}
 }
