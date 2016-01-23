@@ -12,8 +12,8 @@
         echo("Done uploading");
         
         //Add the file to the database
-        $req = $bdd->prepare('INSERT INTO files(id, name)
-								VALUES(\'\', :name)');
+        $req = $bdd->prepare('INSERT INTO files(id, name, time)
+								VALUES(\'\', :name, NOW())');
         $req->execute(array('name' => $_GET['name']));
         echo $bdd->lastInsertId();
     }

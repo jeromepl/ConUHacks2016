@@ -51,7 +51,13 @@ public class Server {
 
 		});
 	}
-	
+
+	public void search(String query) {
+
+		String url = "http://www.nodynotes.com/findme/search.php?query=" + query;
+		//TODO Call server GET way
+	}
+
 	public static String toGetRequest(List<String> tags) {
 		StringBuffer string = new StringBuffer();
 		for (String tag : tags) {

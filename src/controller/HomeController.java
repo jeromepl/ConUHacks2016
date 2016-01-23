@@ -13,17 +13,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import model.Server;
 import javafx.scene.control.ScrollPane;
 
 public class HomeController implements Initializable {
 
-	@Override
-	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-
-	}
-
-    @FXML
+	@FXML
     private AnchorPane Root;
 
     @FXML
@@ -59,9 +54,21 @@ public class HomeController implements Initializable {
     @FXML
     private ImageView image6;
 
+	@Override
+	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+
+	}
+
     @FXML
     void clickSearch(ActionEvent event) {
-    	System.out.println("search clicked");
+
+    	String query = searchBar.getText().trim();
+    	if(query.length() > 0) {
+    		query.replaceAll(" ", "_");
+
+    		Main.instance.getServer().search(query);
+    	}
+
     }
 
 }

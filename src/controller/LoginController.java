@@ -26,17 +26,17 @@ public class LoginController {
 
     @FXML
     void forgotPassBPress(ActionEvent event) {
-
+    	//TODO
     }
 
     @FXML
     void logInPress(ActionEvent event) {
-
+    	Main.instance.showHome();
     }
 
     @FXML
     void newAccBPress(ActionEvent event) {
-
+    	//TODO
     }
 
 }
