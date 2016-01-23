@@ -11,7 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.ScrollPane;
 
 public class HomeController implements Initializable {
 
@@ -21,35 +23,41 @@ public class HomeController implements Initializable {
 
 	}
 
-	 @FXML
-	    private Label label;
+    @FXML
+    private AnchorPane Root;
 
-	    @FXML
-	    private Button searchB;
+    @FXML
+    private Label label;
 
-	    @FXML
-	    private TextField searchBar;
+    @FXML
+    private Button searchB;
 
-	    @FXML
-	    private ImageView image1;
+    @FXML
+    private TextField searchBar;
 
-	    @FXML
-	    private ImageView iamge2;
+    @FXML
+    private ScrollPane ScrollPane;
 
-	    @FXML
-	    private ImageView image3;
+    @FXML
+    private GridPane GridPane;
 
-	    @FXML
-	    private ImageView image4;
+    @FXML
+    private ImageView iamge2;
 
-	    @FXML
-	    private ImageView image5;
+    @FXML
+    private ImageView image1;
 
-	    @FXML
-	    private ImageView image6;
+    @FXML
+    private ImageView image4;
 
-	    @FXML
-	    private GridPane ImagePane;
+    @FXML
+    private ImageView image3;
+
+    @FXML
+    private ImageView image5;
+
+    @FXML
+    private ImageView image6;
 
     @FXML
     void clickSearch(ActionEvent event) {
