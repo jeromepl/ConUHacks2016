@@ -41,6 +41,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 			loginRoot = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
 			homeRoot = FXMLLoader.load(getClass().getResource("/view/Home.fxml"));
 			
+			
 			mainScene = new Scene(loginRoot, 800, 560);
 
 			// Setup home scene

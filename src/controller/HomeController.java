@@ -7,14 +7,14 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import model.Server;
-import javafx.scene.control.ScrollPane;
 
 public class HomeController implements Initializable {
 
@@ -32,6 +32,9 @@ public class HomeController implements Initializable {
 
     @FXML
     private ScrollPane ScrollPane;
+    
+    @FXML
+    private FlowPane FlowPane;
 
     @FXML
     private GridPane GridPane;
@@ -57,6 +60,8 @@ public class HomeController implements Initializable {
 	@Override
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		System.out.println("Home Scene initialized!");
+		FlowPane.prefHeightProperty().bind(ScrollPane.heightProperty());
+		FlowPane.prefWidthProperty().bind(ScrollPane.widthProperty());
 	}
 
     @FXML
@@ -64,7 +69,7 @@ public class HomeController implements Initializable {
 
     	String query = searchBar.getText().trim();
     	if(query.length() > 0) {
-    		query.replaceAll(" ", "_");
+    		query = query.replaceAll(" ", "_");
 
     		Main.instance.getServer().search(query);
     	}
