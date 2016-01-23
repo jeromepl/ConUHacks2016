@@ -6,5 +6,5 @@ import com.clarifai.api.RecognitionResult;
 
 public interface ResultListener {
 
-	public void OnResult(File file, RecognitionResult result);
+	public void onResult(File file, RecognitionResult result);
 }
