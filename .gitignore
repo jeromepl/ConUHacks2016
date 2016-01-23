@@ -15,3 +15,6 @@ hs_err_pid*
 .project
 /bin
 /.settings
+
+#SQL connection
+mySQL_connection.php
