@@ -3,25 +3,25 @@
 
     if(isset($_GET['query']) && strlen($_GET['query']) > 0) {
         
-        $in_list = implode(',', explode('_', $_GET['query']));
+        //$in_list = implode(',', explode('_', $_GET['query']));
         
-        echo "Hello!";
-        echo "Hello again!";
-        /*
-        $answer = $bdd->prepare('SELECT f.name
+        $query = implode('|', explode('_', $_GET['query']));
+        
+        $req = $bdd->prepare("SELECT f.name
                                     FROM files f
                                     INNER JOIN tags t ON t.file_id = f.id
-									WHERE t IN (:query)
-                                    ORDER BY f.time DESC');
-		$answer->execute(array('query' => $_SESSION['id'],
-								'query1' => $_GET['query'],
-								'query2' => $_GET['query']))
-								or die(print_r($bdd->errorInfo()));
-									
-		while($data = $answer->fetch()) {
-			
+                                    WHERE t.tag REGEXP :query
+                                    ORDER BY f.time DESC");
+        
+		$req->execute(array('query' => $query)) or die(print_r($bdd->errorInfo()));
+        
+        $results = array();
+		while($data = $req->fetch()) {
+			array_push($results, $data['name']);
 		}
 		
-		$answer->closeCursor();*/
+		$req->closeCursor();
+        
+        echo(implode(';', $results));
         
     }

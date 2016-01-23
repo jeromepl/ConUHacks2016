@@ -14,9 +14,16 @@
         echo("Done uploading");
         
         //Add the file to the database
-        $req = $bdd->prepare('INSERT INTO files(id, name, time)
-								VALUES(\'\', :name, NOW())');
+        $req = $bdd->prepare('SELECT id FROM files WHERE name=:name');
         $req->execute(array('name' => $_GET['name']));
-        echo $bdd->lastInsertId();
+        $data = $req->fetchAll();
+        $req->closeCursor();
+        
+        if(count($data) == 0) {
+            $req = $bdd->prepare('INSERT INTO files(id, name, time)
+								    VALUES(\'\', :name, NOW())');
+            $req->execute(array('name' => $_GET['name']));
+            echo $bdd->lastInsertId();
+        }
     }
 ?>
