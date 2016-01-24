@@ -144,7 +144,7 @@ public class HomeController implements Initializable, SearchListener {
 			        
 			        // Sorry this is really bad but I'm too tired to restructure everything
 			        if (!images.isEmpty()) {
-			        	FadeTransition ft = new FadeTransition(new Duration(1000),images.get(images.size() - 1));
+			        	FadeTransition ft = new FadeTransition(new Duration(250),images.get(images.size() - 1));
 			        	ft.setFromValue(0);
 			        	ft.setToValue(1);
 			        	//ft.play();

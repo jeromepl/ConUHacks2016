@@ -170,7 +170,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	}
 
 	public void showHome() {
-		FadeTransition ft = new FadeTransition(new Duration(1500), homeRoot);
+		FadeTransition ft = new FadeTransition(new Duration(500), homeRoot);
 		ft.setFromValue(0.0);
 		ft.setToValue(1.0);
 		ft.play();
