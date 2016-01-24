@@ -8,6 +8,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 import model.SearchListener;
 
 public class HomeController implements Initializable, SearchListener {
@@ -112,6 +116,21 @@ public class HomeController implements Initializable, SearchListener {
 			        }
 			        else {
 			        	addImage("file.png");
+			        }
+			        
+			        // Sorry this is really bad but I'm too tired to restructure everything
+			        if (!images.isEmpty()) {
+			        	FadeTransition ft = new FadeTransition(new Duration(1000),images.get(images.size() - 1));
+			        	ft.setFromValue(0);
+			        	ft.setToValue(1);
+			        	//ft.play();
+			        	TranslateTransition tt = new TranslateTransition(new Duration(500), images.get(images.size() - 1));
+			        	tt.setFromX(100);
+			        	tt.setToX(0);
+			        	//tt.play();
+			        	ParallelTransition pt = new ParallelTransition();
+			        	pt.getChildren().addAll(ft,tt);
+			        	pt.play();
 			        }
 				}
 				
