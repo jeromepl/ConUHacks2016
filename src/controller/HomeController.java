@@ -1,9 +1,11 @@
 package controller;
 
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -24,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,7 +46,7 @@ public class HomeController implements Initializable, SearchListener {
 
 	@FXML
     private AnchorPane Root;
-	
+
     @FXML
     private GridPane mainGrid;
 
@@ -55,32 +58,36 @@ public class HomeController implements Initializable, SearchListener {
 
     @FXML
     private ScrollPane ScrollPane;
-    
+
     @FXML
     private FlowPane flowPane;
-    
+
     @FXML
     private HBox bottomBar;
-    
+
     @FXML
     private Label label;
-    
-    private ArrayList<ImageView> images = new ArrayList<ImageView>();
+
+    public ArrayList<MyFile> images = new ArrayList<MyFile>();
 
 	@Override
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		System.out.println("Home Scene initialized!");
-		
+
 		flowPane.prefWidthProperty().bind(ScrollPane.widthProperty());
 		flowPane.setVgap(50);
 		mainGrid.prefHeightProperty().bind(Root.heightProperty());
 		mainGrid.prefWidthProperty().bind(Root.widthProperty());
 		//ScrollPane.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
-		
-		addAllImages();
+
+		try {
+			addAllImages();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 
 	}
-	
+
 	@FXML
     void search(KeyEvent event) {
 		if(event.getCode() == KeyCode.ENTER){
@@ -93,14 +100,18 @@ public class HomeController implements Initializable, SearchListener {
 			else {
 				flowPane.getChildren().clear();
 	    		images.clear();
-	    		addAllImages();
+	    		try {
+					addAllImages();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
     	}
     }
 
     @FXML
     void clickSearch(ActionEvent event) {
-    	
+
     	String query = searchBar.getText().trim();
     	if(query.length() > 0) {
     		query = query.replaceAll(" ", "_");
@@ -110,7 +121,11 @@ public class HomeController implements Initializable, SearchListener {
     	else {
     		flowPane.getChildren().clear();
     		images.clear();
-    		addAllImages();
+    		try {
+				addAllImages();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
     	}
 
     }
@@ -121,34 +136,63 @@ public class HomeController implements Initializable, SearchListener {
 
 			@Override
 			public void run() {
-				
+
 				flowPane.getChildren().clear();
 				images.clear();
-				
+
 				for (String image : files) {
 					String ext = image.substring(image.lastIndexOf(".") + 1);
 			        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
-			        	addImage("images/" + image);
+			        	MyFile file;
+						try {
+							file = new MyFile(new Image(new FileInputStream(new File("images/" + image))), image, "images/" + image);
+							addImage(file);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}
 			        }
 			        else {
-			        	addImage("file.png");
+			        	MyFile file;
+						try {
+							file = new MyFile(new Image(new FileInputStream(new File("file.png"))), image, "images/" + image);
+							addImage(file);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}
 			        }
-			        images.get(images.size() - 1).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			        images.get(images.size() - 1).getImageView().setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 					     @Override
 					     public void handle(MouseEvent event) {
-					         Main.instance.showImage((ImageView)event.getSource());
+					    	 ImageView iv = (ImageView)event.getSource();
+					    	 MyFile file = new MyFile();
+					    	 for(int i = 0; i < images.size(); i++) {
+					    		 if(images.get(i).getImageView() == iv)
+					    			 file = images.get(i);
+
+					    	 }
+					    	 String ext = file.getPath().substring(file.getPath().lastIndexOf(".") + 1);
+					    	 if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+					    		 Main.instance.showImage((ImageView)event.getSource());
+					        }
+					        else {
+					            try {
+									Desktop.getDesktop().open(new File(file.getPath()));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+					        }
 					         event.consume();
 					     }
 					});
-			        
+
 			        // Sorry this is really bad but I'm too tired to restructure everything
 			        if (!images.isEmpty()) {
-			        	FadeTransition ft = new FadeTransition(new Duration(250),images.get(images.size() - 1));
+			        	FadeTransition ft = new FadeTransition(new Duration(250),images.get(images.size() - 1).getImageView());
 			        	ft.setFromValue(0);
 			        	ft.setToValue(1);
 			        	//ft.play();
-			        	TranslateTransition tt = new TranslateTransition(new Duration(500), images.get(images.size() - 1));
+			        	TranslateTransition tt = new TranslateTransition(new Duration(500), images.get(images.size() - 1).getImageView());
 			        	tt.setFromX(100);
 			        	tt.setToX(0);
 			        	//tt.play();
@@ -157,16 +201,16 @@ public class HomeController implements Initializable, SearchListener {
 			        	pt.play();
 			        }
 				}
-				
+
 			}
 		});
 	}
-	
-	public void addImage(String path) {
-		
+
+	public void addImage(MyFile file) {
+
 		double offset = 0;
 		double imageWidth = 0;
-		
+
 		if (ScrollPane.getWidth() != 0) {
 		offset = ScrollPane.getWidth() * 0.01;
 		imageWidth = ScrollPane.getWidth() * 0.235;
@@ -175,29 +219,35 @@ public class HomeController implements Initializable, SearchListener {
 			offset = Main.WIDTH * 0.01;
 			imageWidth = Main.WIDTH * 0.235;
 		}
-		
+
 		flowPane.setHgap(offset);
 		flowPane.setPadding(new Insets(15, 0, 0, offset));
-		
-		try {
-			Image img = new Image(new FileInputStream(new File(path)));
-			ImageView imageView = new ImageView(img);
-			imageView.setPreserveRatio(true);
-			imageView.setFitWidth(imageWidth);
-			imageView.setEffect(new DropShadow());
-			
-			flowPane.getChildren().add(imageView);
-			images.add(imageView);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+
+		Image img = file.getImage();
+		ImageView imageView = new ImageView(img);
+		imageView.setPreserveRatio(true);
+		imageView.setFitWidth(imageWidth);
+		imageView.setEffect(new DropShadow());
+
+		file.setImageView(imageView);
+
+		//Label lbl = new Label(file.getName());
+
+		Tooltip t = new Tooltip(file.getName());
+		Tooltip.install(imageView, t);
+
+		flowPane.getChildren().add(imageView);
+		//flowPane.getChildren().add(lbl);
+		//TODO
+
+		images.add(file);
 
 	}
-	
+
 	public void rebuildImages() {
 		double offset = 0;
 		double imageWidth = 0;
-		
+
 		if (Main.currentWidth != 0) {
 		offset = Main.currentWidth * 0.01;
 		imageWidth = Main.currentWidth * 0.235;
@@ -206,20 +256,26 @@ public class HomeController implements Initializable, SearchListener {
 			offset = Main.WIDTH * 0.01;
 			imageWidth = Main.WIDTH * 0.235;
 		}
-		
+
 		flowPane.setHgap(offset);
 		flowPane.setPadding(new Insets(15, 0, 0, offset));
 		flowPane.getChildren().clear();
-		
-		for (ImageView image : images) {
-			image.setFitWidth(imageWidth);
-			flowPane.getChildren().add(image);
+
+		for (MyFile image : images) {
+			image.getImageView().setFitWidth(imageWidth);
+			flowPane.getChildren().add(image.getImageView());
+
+			//Label lbl = new Label(image.getName());
+			Tooltip t = new Tooltip(image.getName());
+			Tooltip.install(image.getImageView(), t);
+			//flowPane.getChildren().add(lbl);
+			//TODO
 		}
 	}
-	
+
 	public void showSync() {
 		Platform.runLater(new Runnable() {
-		
+
 			@Override
 			public void run() {
 				bottomBar.getChildren().clear();
@@ -232,7 +288,7 @@ public class HomeController implements Initializable, SearchListener {
 				bottomBar.getChildren().add(c1);
 				bottomBar.getChildren().add(c2);
 				bottomBar.getChildren().add(c3);
-				
+
 				ScaleTransition t1 = new ScaleTransition(new Duration(250), c1);
 				t1.setCycleCount(2);
 				t1.setAutoReverse(true);
@@ -243,7 +299,7 @@ public class HomeController implements Initializable, SearchListener {
 				t1.setToY(1.5);
 				t1.setToZ(1.5);
 				//t1.play();
-				
+
 				ScaleTransition t2 = new ScaleTransition(new Duration(250), c2);
 				t2.setCycleCount(2);
 				t2.setAutoReverse(true);
@@ -254,7 +310,7 @@ public class HomeController implements Initializable, SearchListener {
 				t2.setToY(1.5);
 				t2.setToZ(1.5);
 				//t2.play();
-				
+
 				ScaleTransition t3 = new ScaleTransition(new Duration(250), c3);
 				t3.setCycleCount(2);
 				t3.setAutoReverse(true);
@@ -265,14 +321,14 @@ public class HomeController implements Initializable, SearchListener {
 				t3.setToY(1.5);
 				t3.setToZ(1.5);
 				//t3.play();
-				
+
 				SequentialTransition st = new SequentialTransition(t1,t2,t3);
 				st.setCycleCount(Transition.INDEFINITE);
 				st.play();
 			}
 		});
 	}
-	
+
 	public void hideSync() {
 		Platform.runLater(new Runnable() {
 
@@ -281,37 +337,56 @@ public class HomeController implements Initializable, SearchListener {
 				bottomBar.getChildren().clear();
 				bottomBar.getChildren().add(label);
 			}
-			
+
 		});
 
 	}
-	
-	public void addAllImages() {
+
+	public void addAllImages() throws FileNotFoundException {
 		File folder = new File("images");
 		File[] listOfFiles = folder.listFiles();
-		
+
 		for (int i = 0; i < listOfFiles.length; i++) {
 		    if (listOfFiles[i].isFile()) {
-		        
+
 		        String filePath = listOfFiles[i].getAbsolutePath();
 		        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
-		        
+
+		        MyFile file = new MyFile(new Image(new FileInputStream(listOfFiles[i])), listOfFiles[i].getName(), listOfFiles[i].getPath());
+
 		        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
-		            addImage(filePath);
+		            addImage(file);
 		        }
 		        else {
-		            //Add an icon instead. This is where it would be useful to show the name of the since other wise how do you diffenrentiate 2 files
-		        	addImage("file.png");
+		            file.setImage(new Image(new FileInputStream(new File("file.png"))));//Add an icon instead. This is where it would be useful to show the name of the since other wise how do you diffenrentiate 2 files
+		        	addImage(file);
 		        }
-		        images.get(images.size() - 1).setOnMouseClicked(new EventHandler<MouseEvent>() {
+		        images.get(images.size() - 1).getImageView().setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 				     @Override
 				     public void handle(MouseEvent event) {
-				         Main.instance.showImage((ImageView)event.getSource());
+				    	 ImageView iv = (ImageView)event.getSource();
+				    	 MyFile file = new MyFile();
+				    	 for(int i = 0; i < images.size(); i++) {
+				    		 if(images.get(i).getImageView() == iv)
+				    			 file = images.get(i);
+
+				    	 }
+				    	 String ext = file.getPath().substring(file.getPath().lastIndexOf(".") + 1);
+				    	 if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+				    		 Main.instance.showImage((ImageView)event.getSource());
+				        }
+				        else {
+				            try {
+								Desktop.getDesktop().open(new File(file.getPath()));
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+				        }
 				         event.consume();
 				     }
 				});
-		        
+
 		        //HAVE FUN!
 		    }
 		}

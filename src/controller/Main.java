@@ -1,6 +1,8 @@
 package controller;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.util.List;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -21,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -35,10 +39,10 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 560;
-	
+
 	public static double currentWidth = WIDTH;
 	public static double currentHeight = HEIGHT;
-	
+
 	private APIUtils apiUtils = new APIUtils();
 	Server server = new Server();
 
@@ -137,7 +141,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 
 	        // Setup resizing
 	        mainScene.widthProperty().addListener(new ChangeListener<Number>() {
-	            @Override 
+	            @Override
 	            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
 	                currentWidth = (double) newSceneWidth;
 	            	homeController.rebuildImages();
@@ -145,14 +149,14 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	            }
 	        });
 	        mainScene.heightProperty().addListener(new ChangeListener<Number>() {
-	            @Override 
+	            @Override
 	            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
 	            	currentHeight = (double) newSceneHeight;
 	            	homeController.rebuildImages();
 	            	imageController.rebuildImage();
 	            }
 	        });
-	        
+
 			// Setup stage
 			primaryStage.setOnCloseRequest(this);
 
@@ -170,7 +174,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	}
 
 	public void showHome() {
-		FadeTransition ft = new FadeTransition(new Duration(500), homeRoot);
+		FadeTransition ft = new FadeTransition(new Duration(1200), homeRoot);
 		ft.setFromValue(0.0);
 		ft.setToValue(1.0);
 		ft.play();
@@ -180,7 +184,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	public void showLogin() {
 		mainScene.setRoot(loginRoot);
 	}
-	
+
 	public void showImage(ImageView image) {
 		mainScene.setRoot(imageRoot);
 		imageController.setImage(new ImageView(image.getImage()));
@@ -193,9 +197,59 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	}
 
 	@Override
-	public void onResult() {
-		homeController.hideSync();
-		System.out.println("Uploaded File");
+	public void onResult(File rootFile) {
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+					String filePath = rootFile.getAbsolutePath();
+			        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+
+			        MyFile file = new MyFile(new Image(new FileInputStream(rootFile)), rootFile.getName(), rootFile.getPath());
+
+			        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+			            homeController.addImage(file);
+			        }
+			        else {
+			            file.setImage(new Image(new FileInputStream(new File("file.png"))));//Add an icon instead. This is where it would be useful to show the name of the since other wise how do you diffenrentiate 2 files
+			            homeController.addImage(file);
+			        }
+			        homeController.images.get(homeController.images.size() - 1).getImageView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+					     @Override
+					     public void handle(MouseEvent event) {
+					    	 ImageView iv = (ImageView)event.getSource();
+					    	 MyFile file = new MyFile();
+					    	 for(int i = 0; i < homeController.images.size(); i++) {
+					    		 if(homeController.images.get(i).getImageView() == iv)
+					    			 file = homeController.images.get(i);
+
+					    	 }
+					    	 String ext = file.getPath().substring(file.getPath().lastIndexOf(".") + 1);
+					    	 if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+					    		 Main.instance.showImage((ImageView)event.getSource());
+					        }
+					        else {
+					            try {
+									Desktop.getDesktop().open(new File(file.getPath()));
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+					        }
+					         event.consume();
+					     }
+					});
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+
+			});
+
+			homeController.hideSync();
+			System.out.println("Uploaded File");
 	}
 
 	public Server getServer() {
