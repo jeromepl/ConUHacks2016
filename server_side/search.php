@@ -5,15 +5,19 @@
         
         //$in_list = implode(',', explode('_', $_GET['query']));
         
-        $query = implode('|', explode('_', $_GET['query']));
+        $words = explode('_', $_GET['query']);
+        for($i = 0; $i < count($words); $i++) {
+            $words[$i] = '"' . $words[$i] . '"';
+        }
+        $query = implode(',', $words);
         
-        $req = $bdd->prepare("SELECT f.name
+        $req = $bdd->prepare("SELECT DISTINCT f.name
                                     FROM files f
                                     INNER JOIN tags t ON t.file_id = f.id
-                                    WHERE t.tag REGEXP :query
+                                    WHERE f.name IN(" . $query . ") OR t.tag IN(" . $query . ")
                                     ORDER BY f.time DESC");
         
-		$req->execute(array('query' => $query)) or die(print_r($bdd->errorInfo()));
+		$req->execute() or die(print_r($bdd->errorInfo())); //array('query1' => $query, 'query2' => $query)
         
         $results = array();
 		while($data = $req->fetch()) {

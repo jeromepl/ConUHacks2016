@@ -87,6 +87,8 @@ public class Server {
 					if(!response.isEmpty())
 						files = response.split(";");
 
+					System.out.println(response);
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
