@@ -10,6 +10,9 @@ import java.util.ResourceBundle;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -30,6 +33,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import model.SearchListener;
 
@@ -42,9 +48,6 @@ public class HomeController implements Initializable, SearchListener {
     private GridPane mainGrid;
 
     @FXML
-    private Label label;
-
-    @FXML
     private Button searchB;
 
     @FXML
@@ -55,6 +58,12 @@ public class HomeController implements Initializable, SearchListener {
     
     @FXML
     private FlowPane flowPane;
+    
+    @FXML
+    private HBox bottomBar;
+    
+    @FXML
+    private Label label;
     
     private ArrayList<ImageView> images = new ArrayList<ImageView>();
 
@@ -90,9 +99,11 @@ public class HomeController implements Initializable, SearchListener {
 		}
 
 	}
+	
+	boolean synching;
+	
 	@FXML
     void search(KeyEvent event) {
-		System.out.println("nig");
 		if(event.getCode() == KeyCode.ENTER){
 			String query = searchBar.getText().trim();
 			if(query.length() > 0) {
@@ -101,6 +112,16 @@ public class HomeController implements Initializable, SearchListener {
 				Main.instance.getServer().search(query, this);
 			}
     	}
+		if (event.getCode() == KeyCode.S) {
+			if (synching) {
+				hideSync();
+				synching = false;
+			}
+			else {
+				showSync();
+				synching = true;
+			}
+		}
     }
 
     @FXML
@@ -126,7 +147,6 @@ public class HomeController implements Initializable, SearchListener {
 				images.clear();
 				
 				for (String image : files) {
-					
 					String ext = image.substring(image.lastIndexOf(".") + 1);
 			        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
 			        	addImage("images/" + image);
@@ -156,7 +176,6 @@ public class HomeController implements Initializable, SearchListener {
 			        	ParallelTransition pt = new ParallelTransition();
 			        	pt.getChildren().addAll(ft,tt);
 			        	pt.play();
-			        	
 			        }
 				}
 				
@@ -198,6 +217,61 @@ public class HomeController implements Initializable, SearchListener {
 			image.setFitWidth(imageWidth);
 			flowPane.getChildren().add(image);
 		}
+	}
+	
+	public void showSync() {
+		bottomBar.getChildren().clear();
+		Circle c1 = new Circle(10);
+		c1.setFill(Color.valueOf("#b5b5b5ae"));
+		Circle c2 = new Circle(10);
+		c2.setFill(Color.valueOf("#b5b5b5ae"));
+		Circle c3 = new Circle(10);
+		c3.setFill(Color.valueOf("#b5b5b5ae"));
+		bottomBar.getChildren().add(c1);
+		bottomBar.getChildren().add(c2);
+		bottomBar.getChildren().add(c3);
+		
+		ScaleTransition t1 = new ScaleTransition(new Duration(250), c1);
+		t1.setCycleCount(2);
+		t1.setAutoReverse(true);
+		t1.setFromX(1);
+		t1.setFromY(1);
+		t1.setFromZ(1);
+		t1.setToX(1.5);
+		t1.setToY(1.5);
+		t1.setToZ(1.5);
+		//t1.play();
+		
+		ScaleTransition t2 = new ScaleTransition(new Duration(250), c2);
+		t2.setCycleCount(2);
+		t2.setAutoReverse(true);
+		t2.setFromX(1);
+		t2.setFromY(1);
+		t2.setFromZ(1);
+		t2.setToX(1.5);
+		t2.setToY(1.5);
+		t2.setToZ(1.5);
+		//t2.play();
+		
+		ScaleTransition t3 = new ScaleTransition(new Duration(250), c3);
+		t3.setCycleCount(2);
+		t3.setAutoReverse(true);
+		t3.setFromX(1);
+		t3.setFromY(1);
+		t3.setFromZ(1);
+		t3.setToX(1.5);
+		t3.setToY(1.5);
+		t3.setToZ(1.5);
+		//t3.play();
+		
+		SequentialTransition st = new SequentialTransition(t1,t2,t3);
+		st.setCycleCount(Transition.INDEFINITE);
+		st.play();
+	}
+	
+	public void hideSync() {
+		bottomBar.getChildren().clear();
+		bottomBar.getChildren().add(label);
 	}
 
 }

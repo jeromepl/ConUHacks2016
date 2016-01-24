@@ -34,9 +34,9 @@
                   </Button>
                </children>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+            <HBox fx:id="bottomBar" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" spacing="7">
                <children>
-                  <Label snapToPixel="false" text="DRAG AND DROP FILES HERE" textFill="#b5b5b5ae">
+                  <Label fx:id="label" snapToPixel="false" text="DRAG AND DROP FILES HERE" textFill="#b5b5b5ae">
                      <font>
                         <Font name="Arial" size="24.0" />
                      </font>
