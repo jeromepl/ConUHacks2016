@@ -4,6 +4,7 @@ package controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -13,6 +14,7 @@ import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -25,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -55,6 +58,7 @@ public class HomeController implements Initializable, SearchListener {
     private FlowPane flowPane;
     
     private ArrayList<ImageView> images = new ArrayList<ImageView>();
+    private ArrayList<String> sources = new ArrayList<String>();
 
 	@Override
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
@@ -124,13 +128,29 @@ public class HomeController implements Initializable, SearchListener {
 				images.clear();
 				
 				for (String image : files) {
+					
 					String ext = image.substring(image.lastIndexOf(".") + 1);
 			        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
 			        	addImage("images/" + image);
+			        	sources.add("images/" + image);
 			        }
 			        else {
 			        	addImage("file.png");
 			        }
+			        images.get(images.size() - 1).addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+					     @Override
+					     public void handle(MouseEvent event) {
+					    	 try {
+								Runtime.getRuntime().exec();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+					         event.consume();
+					     }
+					});
 			        
 			        // Sorry this is really bad but I'm too tired to restructure everything
 			        if (!images.isEmpty()) {
@@ -145,6 +165,7 @@ public class HomeController implements Initializable, SearchListener {
 			        	ParallelTransition pt = new ParallelTransition();
 			        	pt.getChildren().addAll(ft,tt);
 			        	pt.play();
+			        	
 			        }
 				}
 				
