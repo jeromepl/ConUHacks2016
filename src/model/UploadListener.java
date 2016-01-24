@@ -1,8 +1,5 @@
 package model;
 
-
-public interface ServerListener {
-
+public interface UploadListener {
 	public void onResult();
-
 }

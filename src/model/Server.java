@@ -23,7 +23,7 @@ public class Server {
 		threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 	}
 
-	public void upload(File file, ServerListener listener) throws MalformedURLException, IOException {
+	public void upload(File file, UploadListener listener) throws MalformedURLException, IOException {
 		threadPool.submit(new Runnable() {
 
 			@Override
@@ -52,27 +52,37 @@ public class Server {
 		});
 	}
 
-	public void search(String query) {
-		try {
-			URL url = new URL("http://www.nodynotes.com/findme/search.php?query=" + query);
-			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+	public void search(String query, SearchListener listener) {
+		threadPool.submit(new Runnable() {
 
-			con.setRequestMethod("GET");
+			@Override
+			public void run() {
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			String response = "";
+				String[] files = new String[0];
+				try {
+					URL url = new URL("http://www.nodynotes.com/findme/search.php?query=" + query);
+					HttpURLConnection con = (HttpURLConnection)url.openConnection();
 
-			while ((inputLine = in.readLine()) != null) {
-				response += inputLine;
+					con.setRequestMethod("GET");
+
+					BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+					String inputLine;
+					String response = "";
+
+					while ((inputLine = in.readLine()) != null) {
+						response += inputLine;
+					}
+					in.close();
+
+					files = response.split(";");
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				listener.onResult(files);
 			}
-			in.close();
-
-			System.out.println(response);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		});
 	}
 
 	public static String toGetRequest(List<String> tags) {

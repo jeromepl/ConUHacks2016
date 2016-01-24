@@ -10,7 +10,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.APIUtils;
 import model.Server;
-import model.ServerListener;
+import model.UploadListener;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.DragEvent;
@@ -18,7 +18,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 
-public class Main extends Application implements EventHandler<WindowEvent>, ServerListener {
+public class Main extends Application implements EventHandler<WindowEvent>, UploadListener {
 
 	private APIUtils apiUtils = new APIUtils();
 	Server server = new Server();
@@ -27,13 +27,13 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 
 	private Stage stage;
 	private Scene mainScene;
-	
+
 	private Parent loginRoot;
 	private Parent homeRoot;
-	
+
 	private LoginController loginController;
 	private HomeController homeController;
-	
+
 	@Override
 	public void start(Stage primaryStage) {
 		instance = this;
@@ -43,13 +43,13 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 			// Load FXML
 			FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
 			FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/view/Home.fxml"));
-			
+
 			loginRoot = loginLoader.load();
 			loginController = loginLoader.getController();
 			homeRoot = homeLoader.load();
 			homeController = homeLoader.getController();
-			
-			
+
+
 			mainScene = new Scene(loginRoot, 800, 560);
 
 			// Setup home scene
@@ -85,7 +85,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	                event.consume();
 	            }
 	        });
-			
+
 			// Setup stage
 			primaryStage.setOnCloseRequest(this);
 
@@ -104,7 +104,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Serv
 	public void showHome() {
 		mainScene.setRoot(homeRoot);
 	}
-	
+
 	public void showLogin() {
 		mainScene.setRoot(loginRoot);
 	}
