@@ -9,11 +9,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
@@ -21,16 +29,16 @@ import model.APIUtils;
 import model.ResultListener;
 import model.Server;
 import model.UploadListener;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 
 
 public class Main extends Application implements EventHandler<WindowEvent>, ResultListener, UploadListener {
 
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 560;
+	
+	public static double currentWidth = WIDTH;
+	public static double currentHeight = HEIGHT;
+	
 	private APIUtils apiUtils = new APIUtils();
 	Server server = new Server();
 
@@ -41,9 +49,11 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 
 	private Parent loginRoot;
 	private Parent homeRoot;
+	private Parent imageRoot;
 
 	private LoginController loginController;
 	private HomeController homeController;
+	private ImageController imageController;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -54,14 +64,17 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 			// Load FXML
 			FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));
 			FXMLLoader homeLoader = new FXMLLoader(getClass().getResource("/view/Home.fxml"));
+			FXMLLoader imageLoader = new FXMLLoader(getClass().getResource("/view/Image.fxml"));
 
 			loginRoot = loginLoader.load();
 			loginController = loginLoader.getController();
 			homeRoot = homeLoader.load();
 			homeController = homeLoader.getController();
+			imageRoot = imageLoader.load();
+			imageController = imageLoader.getController();
 
 
-			mainScene = new Scene(loginRoot, 800, 560);
+			mainScene = new Scene(loginRoot, WIDTH, HEIGHT);
 
 			// Setup home scene
 			homeRoot.setOnDragOver(new EventHandler<DragEvent>() {
@@ -81,6 +94,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	                Dragboard db = event.getDragboard();
 	                boolean success = false;
 	                if (db.hasFiles()) {
+	                	homeController.showSync();
 	                    success = true;
 	                    String filePath = null;
 	                    for (File file : db.getFiles()) {
@@ -125,20 +139,17 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	        mainScene.widthProperty().addListener(new ChangeListener<Number>() {
 	            @Override 
 	            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
-	                homeController.rebuildImages();
+	                currentWidth = (double) newSceneWidth;
+	            	homeController.rebuildImages();
+	            	imageController.rebuildImage();
 	            }
 	        });
 	        mainScene.heightProperty().addListener(new ChangeListener<Number>() {
 	            @Override 
 	            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+	            	currentHeight = (double) newSceneHeight;
 	            	homeController.rebuildImages();
-	            }
-	        });
-	        stage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
-
-	            @Override
-	            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-	                //homeController.rebuildImages();
+	            	imageController.rebuildImage();
 	            }
 	        });
 	        
@@ -169,6 +180,11 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	public void showLogin() {
 		mainScene.setRoot(loginRoot);
 	}
+	
+	public void showImage(ImageView image) {
+		mainScene.setRoot(imageRoot);
+		imageController.setImage(new ImageView(image.getImage()));
+	}
 
 	@Override
 	public void handle(WindowEvent e) {
@@ -178,6 +194,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 
 	@Override
 	public void onResult() {
+		homeController.hideSync();
 		System.out.println("Uploaded File");
 	}
 
