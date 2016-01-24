@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -43,38 +45,39 @@ public class HomeController implements Initializable, SearchListener {
     private ScrollPane ScrollPane;
     
     @FXML
-    private FlowPane FlowPane;
-
-    @FXML
-    private GridPane GridPane;
-
-    @FXML
-    private ImageView iamge2;
-
-    @FXML
-    private ImageView image1;
-
-    @FXML
-    private ImageView image4;
-
-    @FXML
-    private ImageView image3;
-
-    @FXML
-    private ImageView image5;
-
-    @FXML
-    private ImageView image6;
+    private FlowPane flowPane;
+    
+    private ArrayList<ImageView> images = new ArrayList<ImageView>();
 
 	@Override
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		System.out.println("Home Scene initialized!");
 		
-		// Stupid javafx
-		FlowPane.prefHeightProperty().bind(ScrollPane.heightProperty());
-		FlowPane.prefWidthProperty().bind(ScrollPane.widthProperty());
+		flowPane.prefWidthProperty().bind(ScrollPane.widthProperty());
+		flowPane.setVgap(50);
 		mainGrid.prefHeightProperty().bind(Root.heightProperty());
 		mainGrid.prefWidthProperty().bind(Root.widthProperty());
+		
+		File folder = new File("images");
+		File[] listOfFiles = folder.listFiles();
+		
+		for (int i = 0; i < listOfFiles.length; i++) {
+		    if (listOfFiles[i].isFile()) {
+		        
+		        String filePath = listOfFiles[i].getAbsolutePath();
+		        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+		        
+		        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+		            addImage(filePath);
+		        }
+		        else {
+		            //Add an icon instead. This is where it would be useful to show the name of the since other wise how do you diffenrentiate 2 files
+		        }
+		        
+		        //HAVE FUN!
+		    }
+		}
+
 	}
 
     @FXML
@@ -96,17 +99,50 @@ public class HomeController implements Initializable, SearchListener {
 
 			@Override
 			public void run() {
-				FlowPane.getChildren().clear();
+				
+				flowPane.getChildren().clear();
+				images.clear();
+				
 				for (String image : files) {
-					try {
-						FlowPane.getChildren().add(new ImageView(new Image(new FileInputStream(new File("images/" + image)))));
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					addImage("images/" + image);
 				}
+				
 			}
 		});
+	}
+	
+	public void addImage(String path) {
+		double offset = ScrollPane.getWidth() * 0.01;
+		double imageWidth = ScrollPane.getWidth() * 0.235;
+		
+		flowPane.setHgap(offset);
+		
+		try {
+			Image img = new Image(new FileInputStream(new File(path)));
+			ImageView imageView = new ImageView(img);
+			imageView.setPreserveRatio(true);
+			imageView.setFitWidth(imageWidth);
+			imageView.setEffect(new DropShadow());
+			
+			flowPane.getChildren().add(imageView);
+			images.add(imageView);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void rebuildImages() {
+		double offset = ScrollPane.getWidth() * 0.01;
+		double imageWidth = ScrollPane.getWidth() * 0.235;
+		
+		flowPane.setHgap(offset);
+		flowPane.getChildren().clear();
+		
+		for (ImageView image : images) {
+			image.setFitWidth(imageWidth);
+			flowPane.getChildren().add(image);
+		}
 	}
 
 }

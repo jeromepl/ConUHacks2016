@@ -9,6 +9,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -117,6 +119,27 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	            }
 	        });
 
+	        // Setup resizing
+	        mainScene.widthProperty().addListener(new ChangeListener<Number>() {
+	            @Override 
+	            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) {
+	                homeController.rebuildImages();
+	            }
+	        });
+	        mainScene.heightProperty().addListener(new ChangeListener<Number>() {
+	            @Override 
+	            public void changed(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) {
+	            	homeController.rebuildImages();
+	            }
+	        });
+	        stage.maximizedProperty().addListener(new ChangeListener<Boolean>() {
+
+	            @Override
+	            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+	                //homeController.rebuildImages();
+	            }
+	        });
+	        
 			// Setup stage
 			primaryStage.setOnCloseRequest(this);
 
