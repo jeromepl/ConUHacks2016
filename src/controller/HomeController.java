@@ -23,6 +23,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -86,10 +88,22 @@ public class HomeController implements Initializable, SearchListener {
 		}
 
 	}
+	@FXML
+    void search(KeyEvent event) {
+		System.out.println("nig");
+		if(event.getCode() == KeyCode.ENTER){
+			String query = searchBar.getText().trim();
+			if(query.length() > 0) {
+				query = query.replaceAll(" ", "_");
+
+				Main.instance.getServer().search(query, this);
+			}
+    	}
+    }
 
     @FXML
     void clickSearch(ActionEvent event) {
-
+    	
     	String query = searchBar.getText().trim();
     	if(query.length() > 0) {
     		query = query.replaceAll(" ", "_");
