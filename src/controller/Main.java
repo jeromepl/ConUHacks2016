@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import model.APIUtils;
 import model.ResultListener;
 import model.Server;
@@ -157,6 +159,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	}
 
 	public void showHome() {
+		FadeTransition ft = new FadeTransition(new Duration(1000), null);
 		mainScene.setRoot(homeRoot);
 	}
 

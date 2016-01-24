@@ -21,12 +21,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import model.SearchListener;
 
 public class HomeController implements Initializable, SearchListener {
@@ -101,7 +97,6 @@ public class HomeController implements Initializable, SearchListener {
 
 	@Override
 	public void onResult(String[] files) {
-		System.out.println(files.length);
 		Platform.runLater(new Runnable(){
 
 			@Override
@@ -129,7 +124,7 @@ public class HomeController implements Initializable, SearchListener {
 		double imageWidth = ScrollPane.getWidth() * 0.235;
 		
 		flowPane.setHgap(offset);
-		flowPane.setPadding(new Insets(0, 0, 0, offset));
+		flowPane.setPadding(new Insets(15, 0, 0, offset));
 		
 		try {
 			Image img = new Image(new FileInputStream(new File(path)));
