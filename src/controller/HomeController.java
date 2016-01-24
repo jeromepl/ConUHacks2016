@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -20,8 +21,12 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import model.SearchListener;
 
 public class HomeController implements Initializable, SearchListener {
@@ -57,6 +62,7 @@ public class HomeController implements Initializable, SearchListener {
 		flowPane.setVgap(50);
 		mainGrid.prefHeightProperty().bind(Root.heightProperty());
 		mainGrid.prefWidthProperty().bind(Root.widthProperty());
+		//ScrollPane.setBackground(new Background(new BackgroundFill(Color.AQUA, CornerRadii.EMPTY, Insets.EMPTY)));
 		
 		File folder = new File("images");
 		File[] listOfFiles = folder.listFiles();
@@ -72,6 +78,7 @@ public class HomeController implements Initializable, SearchListener {
 		        }
 		        else {
 		            //Add an icon instead. This is where it would be useful to show the name of the since other wise how do you diffenrentiate 2 files
+		        	addImage("file.png");
 		        }
 		        
 		        //HAVE FUN!
@@ -104,7 +111,13 @@ public class HomeController implements Initializable, SearchListener {
 				images.clear();
 				
 				for (String image : files) {
-					addImage("images/" + image);
+					String ext = image.substring(image.lastIndexOf(".") + 1);
+			        if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+			        	addImage("images/" + image);
+			        }
+			        else {
+			        	addImage("file.png");
+			        }
 				}
 				
 			}
@@ -116,6 +129,7 @@ public class HomeController implements Initializable, SearchListener {
 		double imageWidth = ScrollPane.getWidth() * 0.235;
 		
 		flowPane.setHgap(offset);
+		flowPane.setPadding(new Insets(0, 0, 0, offset));
 		
 		try {
 			Image img = new Image(new FileInputStream(new File(path)));
@@ -137,6 +151,7 @@ public class HomeController implements Initializable, SearchListener {
 		double imageWidth = ScrollPane.getWidth() * 0.235;
 		
 		flowPane.setHgap(offset);
+		flowPane.setPadding(new Insets(15, 0, 0, offset));
 		flowPane.getChildren().clear();
 		
 		for (ImageView image : images) {

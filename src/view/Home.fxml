@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -50,7 +51,7 @@
                   </Label>
                </children>
             </HBox>
-            <ScrollPane fx:id="ScrollPane" hbarPolicy="NEVER" prefHeight="318.0" prefWidth="746.0" style="-fx-scale-shape: true;" vbarPolicy="ALWAYS" GridPane.rowIndex="1">
+            <ScrollPane fx:id="ScrollPane" hbarPolicy="NEVER" prefHeight="318.0" prefWidth="746.0" style="-fx-scale-shape: true;" styleClass="edge-to-edge" vbarPolicy="ALWAYS" GridPane.rowIndex="1">
                <content>
                   <FlowPane fx:id="flowPane" prefHeight="200.0" prefWidth="200.0" />
                </content>
