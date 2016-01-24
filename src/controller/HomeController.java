@@ -1,9 +1,13 @@
 package controller;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,12 +15,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import model.SearchListener;
 
-public class HomeController implements Initializable {
+public class HomeController implements Initializable, SearchListener {
 
 	@FXML
     private AnchorPane Root;
@@ -78,9 +84,29 @@ public class HomeController implements Initializable {
     	if(query.length() > 0) {
     		query = query.replaceAll(" ", "_");
 
-    		Main.instance.getServer().search(query);
+    		Main.instance.getServer().search(query, this);
     	}
 
     }
+
+	@Override
+	public void onResult(String[] files) {
+		System.out.println(files.length);
+		Platform.runLater(new Runnable(){
+
+			@Override
+			public void run() {
+				FlowPane.getChildren().clear();
+				for (String image : files) {
+					try {
+						FlowPane.getChildren().add(new ImageView(new Image(new FileInputStream(new File("images/" + image)))));
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
 
 }
