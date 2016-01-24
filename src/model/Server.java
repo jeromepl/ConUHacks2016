@@ -23,13 +23,14 @@ public class Server {
 		threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 	}
 
-	public void upload(File file, UploadListener listener) throws MalformedURLException, IOException {
+	public void upload(File file, UploadListener listener, String tags) {
 		threadPool.submit(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
-					HttpURLConnection httpUrlConnection = (HttpURLConnection)new URL("http://www.nodynotes.com/findme/upload.php?name=" + file.getName()).openConnection();
+					HttpURLConnection httpUrlConnection = (HttpURLConnection)new URL("http://www.nodynotes.com/findme/upload.php?name="
+							+ file.getName() + "&tags=" + tags).openConnection();
 			        httpUrlConnection.setDoOutput(true);
 			        httpUrlConnection.setRequestMethod("POST");
 			        OutputStream os = httpUrlConnection.getOutputStream();
@@ -74,7 +75,8 @@ public class Server {
 					}
 					in.close();
 
-					files = response.split(";");
+					if(!response.isEmpty())
+						files = response.split(";");
 
 				} catch (IOException e) {
 					e.printStackTrace();

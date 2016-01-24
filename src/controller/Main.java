@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import model.APIUtils;
+import model.ResultListener;
 import model.Server;
 import model.UploadListener;
 import javafx.scene.Parent;
@@ -18,7 +20,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 
-public class Main extends Application implements EventHandler<WindowEvent>, UploadListener {
+public class Main extends Application implements EventHandler<WindowEvent>, ResultListener, UploadListener {
 
 	private APIUtils apiUtils = new APIUtils();
 	Server server = new Server();
@@ -74,11 +76,18 @@ public class Main extends Application implements EventHandler<WindowEvent>, Uplo
 	                    String filePath = null;
 	                    for (File file : db.getFiles()) {
 	                        filePath = file.getAbsolutePath();
-	                        try {
-								server.upload(new File(filePath), Main.instance);
-							} catch (IOException e) {
-								e.printStackTrace();
+	                        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+							if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
+								File image = new File(filePath);
+								apiUtils.analyseImage(image, new ResultListener() {
+									@Override
+									public void onResult(File file, List<String> tags) {
+										server.upload(image, Main.instance, Server.toGetRequest(tags));
+									}
+								});
 							}
+							else
+								server.upload(new File(filePath), Main.instance, "");
 	                    }
 	                }
 	                event.setDropCompleted(success);
@@ -122,5 +131,11 @@ public class Main extends Application implements EventHandler<WindowEvent>, Uplo
 
 	public Server getServer() {
 		return server;
+	}
+
+	@Override
+	public void onResult(File file, List<String> tags) {
+		// TODO Auto-generated method stub
+
 	}
 }

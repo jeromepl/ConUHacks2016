@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
-</AnchorPane>
 
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+   <children>
+      <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <FlowPane alignment="CENTER" maxHeight="156.0" minHeight="156.0" prefHeight="156.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TextField />
+                  <Button mnemonicParsing="false" text="Button" />
+               </children>
+            </FlowPane>
+         </top>
+         <bottom>
+            <FlowPane alignment="CENTER" columnHalignment="CENTER" maxHeight="105.0" minHeight="105.0" prefHeight="105.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="DRAG AND DROP FILES HERE" textAlignment="CENTER" />
+               </children>
+            </FlowPane>
+         </bottom>
+         <center>
+            <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <content>
+                  <FlowPane prefHeight="200.0" prefWidth="200.0" />
+               </content>
+            </ScrollPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
