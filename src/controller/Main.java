@@ -2,6 +2,10 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javafx.application.Application;
@@ -75,28 +79,36 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 	                    success = true;
 	                    String filePath = null;
 	                    for (File file : db.getFiles()) {
-	                        filePath = file.getAbsolutePath();
+	                    	filePath = file.getAbsolutePath();
+
+	                    	//Copy locally
+	                    	try {
+	                    		Path newPath = FileSystems.getDefault().getPath("images", file.getName());
+								Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
+	                    	//Get tags and upload to server
 	                        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
 							if(ext.equals("jpeg") || ext.equals("jpg") || ext.equals("png") || ext.equals("gif")) {
-								File image = new File(filePath);
-								apiUtils.analyseImage(image, new ResultListener() {
+								apiUtils.analyseImage(file, new ResultListener() {
 									@Override
 									public void onResult(File file, List<String> tags) {
-										server.upload(image, Main.instance, Server.toGetRequest(tags));
+										server.upload(file, Main.instance, Server.toGetRequest(tags));
 									}
 								});
 							}
 							else if(ext.equals("txt")) {
-								File text = new File(filePath);
-								apiUtils.analyseText(text, new ResultListener() {
+								apiUtils.analyseText(file, new ResultListener() {
 									@Override
 									public void onResult(File file, List<String> tags) {
-										server.upload(text, Main.instance, Server.toGetRequest(tags));
+										server.upload(file, Main.instance, Server.toGetRequest(tags));
 									}
 								});
 							}
 							else
-								server.upload(new File(filePath), Main.instance, "");
+								server.upload(file, Main.instance, "");
 	                    }
 	                }
 	                event.setDropCompleted(success);
@@ -108,7 +120,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 			primaryStage.setOnCloseRequest(this);
 
 			primaryStage.setScene(mainScene);
-			primaryStage.setTitle("Awesome App");
+			primaryStage.setTitle("FindMe");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
