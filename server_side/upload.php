@@ -27,15 +27,16 @@
             
             //Add the corresponding tags
             if(isset($_GET['tags']) && strlen($_GET['tags']) > 0) {
-                $tags = explode(';', $_GET['tags']));
+                $tags = explode(';', $_GET['tags']);
                 
                 for($i = 0; $i < count($tags); $i++) {
-                    $tags[$i] = '(\'\', ' . $tags[$i] . ', ' . $id . ')';
+                    $tags[$i] = '("' . $tags[$i] . '", ' . $id . ')';
                 }
                 
-                $req = $bdd->prepare('INSERT INTO tags(id, tag, file_id)
-								        VALUES :tags');
-                $req->execute(array('tags' => implode(',', $tags)));
+                $tags_string = implode(',', $tags);
+                
+                $req = $bdd->prepare('INSERT INTO tags(tag, file_id) VALUES' . $tags_string);
+                $req->execute();
             }
         }
     }

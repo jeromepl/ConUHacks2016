@@ -86,6 +86,15 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 									}
 								});
 							}
+							else if(ext.equals("txt")) {
+								File text = new File(filePath);
+								apiUtils.analyseText(text, new ResultListener() {
+									@Override
+									public void onResult(File file, List<String> tags) {
+										server.upload(text, Main.instance, Server.toGetRequest(tags));
+									}
+								});
+							}
 							else
 								server.upload(new File(filePath), Main.instance, "");
 	                    }
