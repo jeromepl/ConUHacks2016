@@ -19,6 +19,7 @@ import model.Server;
 import model.UploadListener;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -121,6 +122,7 @@ public class Main extends Application implements EventHandler<WindowEvent>, Resu
 
 			primaryStage.setScene(mainScene);
 			primaryStage.setTitle("FindMe");
+			primaryStage.getIcons().add(new Image("file:icon.png"));
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
