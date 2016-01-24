@@ -29,8 +29,8 @@ public class Server {
 			@Override
 			public void run() {
 				try {
-					HttpURLConnection httpUrlConnection = (HttpURLConnection)new URL("http://www.nodynotes.com/findme/upload.php?name="
-							+ file.getName() + "&tags=" + tags).openConnection();
+					String url = "http://www.nodynotes.com/findme/upload.php?name=" + file.getName() + "&tags=" + tags;
+					HttpURLConnection httpUrlConnection = (HttpURLConnection)new URL(url).openConnection();
 			        httpUrlConnection.setDoOutput(true);
 			        httpUrlConnection.setRequestMethod("POST");
 			        OutputStream os = httpUrlConnection.getOutputStream();
@@ -42,7 +42,17 @@ public class Server {
 
 			        os.close();
 			        fis.close();
-			        httpUrlConnection.getInputStream(); //the output is not going to send if we don't try to get the answer from the server
+
+			        BufferedReader in = new BufferedReader(new InputStreamReader(httpUrlConnection.getInputStream()));
+					String inputLine;
+					String response = "";
+
+					while ((inputLine = in.readLine()) != null) {
+						response += inputLine;
+					}
+					in.close();
+
+					System.out.println(response);
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
